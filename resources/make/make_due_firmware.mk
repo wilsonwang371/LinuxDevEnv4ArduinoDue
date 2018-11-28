@@ -37,12 +37,17 @@ ROOT := $(realpath $(shell dirname '$(dir $(lastword $(MAKEFILE_LIST)))'))
 vpath %.c $(PROJECT_DIR)
 VPATH+=$(PROJECT_DIR)
 
+LIBSAM_ROOT = $(ROOT)/../arduino-platform-sam
+LIBSAM = $(LIBSAM_ROOT)/system/libsam
+LIBCMSIS = $(ROOT)/../arduino-platform-sam/system/CMSIS
+
 INCLUDES =
 INCLUDES += -I$(ROOT)/include
-INCLUDES += -I$(ROOT)/sam
-INCLUDES += -I$(ROOT)/sam/libsam
-INCLUDES += -I$(ROOT)/sam/CMSIS/CMSIS/Include
-INCLUDES += -I$(ROOT)/sam/CMSIS/Device/ATMEL
+INCLUDES += -I$(LIBSAM)
+INCLUDES += -I$(LIBCMSIS)/CMSIS/Include
+INCLUDES += -I$(LIBCMSIS)/Device/ATMEL
+
+$(info ${ROOT})
 
 #-------------------------------------------------------------------------------
 # Target selection
@@ -58,7 +63,7 @@ endif
 #-------------------------------------------------------------------------------
 #  Toolchain
 #-------------------------------------------------------------------------------
-CROSS_COMPILE = $(ROOT)/tools/g++_arm_none_eabi/bin/arm-none-eabi-
+CROSS_COMPILE = /usr/bin/arm-none-eabi-
 AR = $(CROSS_COMPILE)ar
 CC = $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
@@ -68,7 +73,7 @@ LKELF = $(CROSS_COMPILE)g++
 OBJCP = $(CROSS_COMPILE)objcopy
 RM=rm -Rf
 MKDIR=mkdir -p
-UPLOAD_BOSSA=$(ROOT)/tools/bossac
+UPLOAD_BOSSA=$(ROOT)/../BOSSA/bin/bossac
 
 
 #-------------------------------------------------------------------------------
@@ -85,8 +90,8 @@ CPPFLAGS += $(OPTIMIZATION) $(INCLUDES)
 ASFLAGS = -mcpu=cortex-m3 -mthumb -Wall -g $(OPTIMIZATION) $(INCLUDES)
 ARFLAGS = rcs
 
-LNK_SCRIPT=$(ROOT)/sam/linker_scripts/gcc/flash.ld
-LIBSAM_ARCHIVE=$(ROOT)/lib/libsam_sam3x8e_gcc_rel.a
+LNK_SCRIPT=$(LIBSAM_ROOT)/variants/arduino_due_x/linker_scripts/gcc/flash.ld
+LIBSAM_ARCHIVE=$(LIBSAM_ROOT)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a
 
 UPLOAD_PORT_BASENAME=$(patsubst /dev/%,%,$(UPLOAD_PORT))
 
@@ -158,7 +163,7 @@ binary: prepare $(OBJ_DIR)/$(OUTPUT_NAME).bin
 .PHONY: install
 install: binary
 	-@echo "Touch programming port ..."
-	-@stty -f "/dev/$(UPLOAD_PORT_BASENAME)" raw ispeed 1200 ospeed 1200 cs8 -cstopb ignpar eol 255 eof 255
+	-@stty --file="/dev/$(UPLOAD_PORT_BASENAME)" raw ispeed 1200 ospeed 1200 cs8 -cstopb ignpar eol 255 eof 255
 	-@printf "\x00" > "/dev/$(UPLOAD_PORT_BASENAME)"
 	-@echo "Waiting before uploading ..."
 	-@sleep 1

@@ -22,8 +22,8 @@ extern "C" {
 #define MASTER_CLK_FREQ (84000000)
 #endif
 
-#include "../sam/libsam/chip.h"
-#include "../sam/CMSIS/Device/ATMEL/sam.h"
+#include "chip.h"
+#include "sam.h"
 
 
 extern void init_controller(void);
