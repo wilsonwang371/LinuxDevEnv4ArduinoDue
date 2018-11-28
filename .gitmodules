@@ -1,0 +1,6 @@
+[submodule "BOSSA"]
+	path = BOSSA
+	url = https://github.com/wilsonwang371/BOSSA.git
+[submodule "arduino-platform-sam"]
+	path = arduino-platform-sam
+	url = https://github.com/wilsonwang371/arduino-platform-sam.git
