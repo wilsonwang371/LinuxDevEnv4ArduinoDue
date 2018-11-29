@@ -1,12 +1,5 @@
 # LinuxDevEnv4ArduinoDue
 
-## Clone
-
-Use this command to check out all the code including submodules
-```bash
-git clone --recursive https://github.com/wilsonwang371/LinuxDevEnv4ArduinoDue.git
-```
-
 ## Install Dependencies
 
 ```bash
@@ -16,7 +9,8 @@ sudo apt install gcc-arm-none-eabi
 ## Try Example
 
 ```bash
-cd resources/example
+cd project_template
+cmake .
 make
 ```
 
