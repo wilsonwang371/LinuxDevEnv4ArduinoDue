@@ -9,18 +9,22 @@
  */
 int main(void)
 {
+  int waittime = 250;
   /* The general init (clock, libc, watchdog ...) */
   init_controller();
-
+  init();
 
   /* Board pin 13 == PB27 */
   PIO_Configure(PIOB, PIO_OUTPUT_1, PIO_PB27, PIO_DEFAULT);
 
-  //init();
-  Serial.begin(9600);
+  if (Serial.availableForWrite()){
+    waittime = 1600;
+  }
+  Serial.begin(115200);
   /* Main loop */
   while(1) {
-    Sleep(250);
+    Sleep(waittime);
+    Serial.print("Hello world.");
     if(PIOB->PIO_ODSR & PIO_PB27) {
       /* Set clear register */
       PIOB->PIO_CODR = PIO_PB27;
@@ -28,6 +32,7 @@ int main(void)
       /* Set set register */
       PIOB->PIO_SODR = PIO_PB27;
     }
+    Serial.flush();
   }
   return 0;
 }
