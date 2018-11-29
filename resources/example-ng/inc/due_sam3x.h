@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#define __SAM3X8E__
+//#define __SAM3X8E__
 
 #ifdef __SAM3X8E__
 #define MAIN_OSC_FREQ (12000000)

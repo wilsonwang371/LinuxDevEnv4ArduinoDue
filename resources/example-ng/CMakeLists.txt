@@ -9,7 +9,7 @@ include("${CMAKE_SOURCE_DIR}/cmake_include/libraries.cmake")
 
 include_directories (${CMAKE_SOURCE_DIR}/inc)
 aux_source_directory (${CMAKE_SOURCE_DIR}/src OBJ_FILES)
-add_library (OBJ ${OBJ_FILES})
+add_library (proj_obj ${OBJ_FILES})
 
 set (CMAKE_CXX_FLAGS_DEBUG "-MMD -g -O0 -DDEBUG")
 set (CMAKE_CXX_FLAGS_RELEASE "-MMD -Os")

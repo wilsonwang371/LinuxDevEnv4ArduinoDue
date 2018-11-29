@@ -28,5 +28,12 @@ include_directories("${SAM_CMSIS_HEADER_FILES_DIR}")
 include_directories("${SAM_VARIANTS_DIR}")
 
 aux_source_directory (${SAM_CORES_DIR} SAM_CORES_SRC_FILES)
-add_library (SAM_CORES_LIB ${SAM_CORES_SRC_FILES})
+add_library (sam_cores_lib ${SAM_CORES_SRC_FILES})
+
+aux_source_directory (${SAM_VARIANTS_DIR} SAM_VARIANTS_SRC_FILES)
+add_library (sam_variants_lib ${SAM_VARIANTS_SRC_FILES})
+
+add_library (libsam_static STATIC IMPORTED)
+set_target_properties(libsam_static PROPERTIES IMPORTED_LOCATION
+                      ${SAM_VARIANTS_DIR}/libsam_sam3x8e_gcc_rel.a)
 
