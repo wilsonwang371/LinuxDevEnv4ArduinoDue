@@ -10,20 +10,11 @@ git clone --recursive https://github.com/wilsonwang371/LinuxDevEnv4ArduinoDue.gi
 ## Install Dependencies
 
 ```bash
-sudo apt install gcc-arm-none-eabi libwxgtk3.0-dev libreadline-dev 
+sudo apt install gcc-arm-none-eabi
 ```
-
-## Build BOSSA
-
-```bash
-pushd BOSSA
-make
-make install
-popd
-```
-
 
 ## Try Example
+
 ```bash
 cd resources/example
 make

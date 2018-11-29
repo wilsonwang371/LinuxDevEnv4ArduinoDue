@@ -24,11 +24,13 @@
 
 .SUFFIXES: .o .a .c .s
 SHELL = /bin/sh
-OUTPUT_NAME=firmware
+OUTPUT_NAME = firmware
 OUTPUT_DIR = .
 PROJECT_DIR = .
-UPLOAD_PORT=/dev/cu.usbmodemfa141
-USB_DEFINITIONS=-DUSB_VID=0x2341 -DUSB_PID=0x003e -DUSBCON '-DUSB_MANUFACTURER="Unknown"' '-DUSB_PRODUCT="Arduino Due"'
+UPLOAD_PORT = /dev/ttyACM0
+USB_DEFINITIONS = -DUSB_VID=0x2341 -DUSB_PID=0x003e -DUSBCON '-DUSB_MANUFACTURER="Unknown"' '-DUSB_PRODUCT="Arduino Due"'
+CORES_DEFINITIONS = -DF_CPU=84000000L -DARDUINO=10806 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__
+VARIANTS_DEFINITIONS = $(CORES_DEFINITIONS)
 
 #-------------------------------------------------------------------------------
 # Related directories and files
@@ -37,17 +39,19 @@ ROOT := $(realpath $(shell dirname '$(dir $(lastword $(MAKEFILE_LIST)))'))
 vpath %.c $(PROJECT_DIR)
 VPATH+=$(PROJECT_DIR)
 
-LIBSAM_ROOT = $(ROOT)/../arduino-platform-sam
-LIBSAM = $(LIBSAM_ROOT)/system/libsam
-LIBCMSIS = $(ROOT)/../arduino-platform-sam/system/CMSIS
+SAM_ROOT = $(ROOT)/../sam/1.6.11
+CORES_DIR = $(SAM_ROOT)/cores/arduino
+VARIANTS_DIR = $(SAM_ROOT)/variants/arduino_due_x
+SAM_DIR = $(SAM_ROOT)/system/libsam
+CMSIS_DIR = $(SAM_ROOT)/system/CMSIS
 
 INCLUDES =
 INCLUDES += -I$(ROOT)/include
-INCLUDES += -I$(LIBSAM)
-INCLUDES += -I$(LIBCMSIS)/CMSIS/Include
-INCLUDES += -I$(LIBCMSIS)/Device/ATMEL
-
-$(info ${ROOT})
+INCLUDES += -I$(SAM_DIR)
+INCLUDES += -I$(CORES_DIR)
+INCLUDES += -I$(VARIANTS_DIR)
+INCLUDES += -I$(CMSIS_DIR)/CMSIS/Include
+INCLUDES += -I$(CMSIS_DIR)/Device/ATMEL
 
 #-------------------------------------------------------------------------------
 # Target selection
@@ -73,14 +77,14 @@ LKELF = $(CROSS_COMPILE)g++
 OBJCP = $(CROSS_COMPILE)objcopy
 RM=rm -Rf
 MKDIR=mkdir -p
-UPLOAD_BOSSA=$(ROOT)/../BOSSA/bin/bossac
+UPLOAD_BOSSA=$(ROOT)/../bossac/1.6.1-arduino/bossac
 
 
 #-------------------------------------------------------------------------------
 #  Flags
 #-------------------------------------------------------------------------------
 CFLAGS += -Wall --param max-inline-insns-single=500 -mcpu=cortex-m3 -mthumb -mlong-calls
-CFLAGS += -ffunction-sections -fdata-sections -nostdlib -std=c99
+CFLAGS += -ffunction-sections -fdata-sections -nostdlib -std=gnu99
 CFLAGS += $(OPTIMIZATION) $(INCLUDES)
 #CFLAGS += -Dprintf=iprintf
 CPPFLAGS += -Wall --param max-inline-insns-single=500 -mcpu=cortex-m3 -mthumb -mlong-calls -nostdlib
@@ -90,8 +94,8 @@ CPPFLAGS += $(OPTIMIZATION) $(INCLUDES)
 ASFLAGS = -mcpu=cortex-m3 -mthumb -Wall -g $(OPTIMIZATION) $(INCLUDES)
 ARFLAGS = rcs
 
-LNK_SCRIPT=$(LIBSAM_ROOT)/variants/arduino_due_x/linker_scripts/gcc/flash.ld
-LIBSAM_ARCHIVE=$(LIBSAM_ROOT)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a
+LNK_SCRIPT=$(SAM_ROOT)/variants/arduino_due_x/linker_scripts/gcc/flash.ld
+LIBSAM_ARCHIVE=$(SAM_ROOT)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a
 
 UPLOAD_PORT_BASENAME=$(patsubst /dev/%,%,$(UPLOAD_PORT))
 
@@ -128,12 +132,24 @@ endif
 #-------------------------------------------------------------------------------
 # Source files and objects
 #-------------------------------------------------------------------------------
-C_SRC=$(wildcard $(PROJECT_DIR)/*.c) $(wildcard ../src/*.c)
-C_OBJ=$(patsubst %.c, %.o, $(notdir $(C_SRC)))
-CPP_SRC=$(wildcard $(PROJECT_DIR)/*.cpp)
-CPP_OBJ=$(patsubst %.cpp, %.o, $(notdir $(CPP_SRC)))
-A_SRC=$(wildcard $(PROJECT_DIR)/*.s)
-A_OBJ=$(patsubst %.s, %.o, $(notdir $(A_SRC)))
+C_SRC = $(wildcard $(PROJECT_DIR)/*.c) $(wildcard ../src/*.c)
+C_OBJ = $(patsubst %.c, %.o, $(notdir $(C_SRC)))
+CPP_SRC = $(wildcard $(PROJECT_DIR)/*.cpp)
+CPP_OBJ = $(patsubst %.cpp, %.o, $(notdir $(CPP_SRC)))
+A_SRC = $(wildcard $(PROJECT_DIR)/*.s)
+A_OBJ = $(patsubst %.s, %.o, $(notdir $(A_SRC)))
+
+
+CORES_C_SRC = $(wildcard $(CORES_DIR)/*.c)
+CORES_CPP_SRC = $(wildcard $(CORES_DIR)/*.cpp)
+CORES_C_OBJ = $(patsubst %.c, %.o, $(notdir $(CORES_C_SRC)))
+CORES_CPP_OBJ = $(patsubst %.cpp, %.o, $(notdir $(CORES_CPP_SRC)))
+
+VARIANTS_C_SRC = $(wildcard $(VARIANTS_DIR)/*.c)
+VARIANTS_CPP_SRC = $(wildcard $(VARIANTS_DIR)/*.cpp)
+VARIANTS_C_OBJ = $(patsubst %.c, %.o, $(notdir $(VARIANTS_C_SRC)))
+VARIANTS_CPP_OBJ = $(patsubst %.cpp, %.o, $(notdir $(VARIANTS_CPP_SRC)))
+
 
 #-------------------------------------------------------------------------------
 # Rules
@@ -156,7 +172,9 @@ prepare:
 
 #-------------------------------------------------------------------------------
 .PHONY: binary
-binary: prepare $(OBJ_DIR)/$(OUTPUT_NAME).bin
+binary: prepare library $(OBJ_DIR)/$(OUTPUT_NAME).bin
+
+library: $(OBJ_DIR)/cores.a
 
 #-------------------------------------------------------------------------------
 # .bin ------> UPLOAD TO CONTROLLER
@@ -169,8 +187,32 @@ install: binary
 	-@sleep 1
 	-@echo "Uploading ..."
 #	$(UPLOAD_BOSSA) $(UPLOAD_VERBOSE_FLAGS) --port="$(UPLOAD_PORT_BASENAME)" -U false -e -w -b "$(OBJ_DIR)/$(OUTPUT_NAME).bin" -R
-	$(UPLOAD_BOSSA) $(UPLOAD_VERBOSE_FLAGS) --port="$(UPLOAD_PORT_BASENAME)" -U false -e -w -v -b "$(OBJ_DIR)/$(OUTPUT_NAME).bin" -R
+	$(UPLOAD_BOSSA) $(UPLOAD_VERBOSE_FLAGS) --port="$(UPLOAD_PORT_BASENAME)" -e -w -v -b "$(OBJ_DIR)/$(OUTPUT_NAME).bin" -R
 	@echo "Done."
+
+
+$(addprefix $(OBJ_DIR)/cores_, $(CORES_C_OBJ)): $(OBJ_DIR)/cores_%.o: $(CORES_DIR)/%.c
+	"$(CC)" -c $(CFLAGS) $(CORES_DEFINITIONS) $< -o $@
+
+$(addprefix $(OBJ_DIR)/cores_, $(CORES_CPP_OBJ)): $(OBJ_DIR)/cores_%.o: $(CORES_DIR)/%.cpp
+	"$(CC)" -xc++ -c $(CPPFLAGS) $(CORES_DEFINITIONS) $< -o $@
+
+$(OBJ_DIR)/cores.a: $(addprefix $(OBJ_DIR)/cores_, $(CORES_C_OBJ)) $(addprefix $(OBJ_DIR)/cores_, $(CORES_CPP_OBJ))
+	"$(AR)" $(ARFLAGS) $@ $^
+	"$(NM)" $@ > $@.txt
+
+
+$(addprefix $(OBJ_DIR)/variants_, $(VARIANTS_C_OBJ)): $(OBJ_DIR)/variants_%.o: $(VARIANTS_DIR)/%.c
+	"$(CC)" -c $(CFLAGS) $(VARIANTS_DEFINITIONS) $< -o $@
+
+$(addprefix $(OBJ_DIR)/variants_, $(VARIANTS_CPP_OBJ)): $(OBJ_DIR)/variants_%.o: $(VARIANTS_DIR)/%.cpp
+	"$(CC)" -xc++ -c $(CPPFLAGS) $(VARIANTS_DEFINITIONS) $< -o $@
+
+$(OBJ_DIR)/variants.a: $(addprefix $(OBJ_DIR)/variants_, $(VARIANTS_C_OBJ)) $(addprefix $(OBJ_DIR)/variants_, $(VARIANTS_CPP_OBJ))
+	"$(AR)" $(ARFLAGS) $@ $^
+	"$(NM)" $@ > $@.txt
+
+
 
 #-------------------------------------------------------------------------------
 # .c -> .o
@@ -191,7 +233,7 @@ $(OBJ_DIR)/$(OUTPUT_NAME).a: $(addprefix $(OBJ_DIR)/, $(C_OBJ)) $(addprefix $(OB
 	"$(NM)" $@ > $@.txt
 
 #  -> .elf
-$(OBJ_DIR)/$(OUTPUT_NAME).elf: $(OBJ_DIR)/$(OUTPUT_NAME).a
+$(OBJ_DIR)/$(OUTPUT_NAME).elf: $(OBJ_DIR)/$(OUTPUT_NAME).a $(OBJ_DIR)/cores.a $(OBJ_DIR)/variants.a 
 	"$(LKELF)" -Os -Wl,--gc-sections -mcpu=cortex-m3 \
 	  "-T$(LNK_SCRIPT)" "-Wl,-Map,$(OBJ_DIR)/$(OUTPUT_NAME).map" \
 	  -o $@ \
