@@ -3,7 +3,7 @@
 ## Install Dependencies
 
 ```bash
-sudo apt install gcc-arm-none-eabi
+sudo apt install cmake gcc-arm-none-eabi
 ```
 
 ## Try Example
