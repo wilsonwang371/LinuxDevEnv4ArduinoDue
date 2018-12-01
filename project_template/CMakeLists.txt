@@ -7,10 +7,19 @@ set (CMAKE_CXX_COMPILER "${CROSSCOMPILE_TOOLCHAIN}gcc")
 set (CMAKE_AR "${CROSSCOMPILE_TOOLCHAIN}ar")
 set (CMAKE_ASM_COMPILER "${CROSSCOMPILE_TOOLCHAIN}as")
 
-include("${CMAKE_SOURCE_DIR}/cmake_include/libraries.cmake")
+set (UPLOAD_BOSSA "")
+set (UPLOAD_VERBOSE_FLAGS "-i -d")
+set (UPLOAD_PORT_BASENAME "ttyACM0")
 
-include_directories (${CMAKE_SOURCE_DIR}/inc)
-aux_source_directory (${CMAKE_SOURCE_DIR}/src OBJ_FILES)
+set (OBJCP "${CROSSCOMPILE_TOOLCHAIN}objcopy")
+
+
+set (TARGET_NAME "firmware")
+include("${CMAKE_SOURCE_DIR}/cmake_include/libraries.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake_include/uploader.cmake")
+
+include_directories ("${CMAKE_SOURCE_DIR}/inc")
+aux_source_directory ("${CMAKE_SOURCE_DIR}/src" OBJ_FILES)
 add_library (proj_obj STATIC ${OBJ_FILES})
 
 set (LNK_SCRIPT "${SAM_VARIANTS_DIR}/linker_scripts/gcc/flash.ld")
@@ -75,15 +84,20 @@ endif (CMAKE_VERBOSE_MAKEFILE)
 SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
 SET(CMAKE_EXE_LINKER_FLAGS "-Os -Wl,--gc-sections -mcpu=cortex-m3 \
-\"-T${LNK_SCRIPT}\" \"-Wl,-Map,${CMAKE_CURRENT_BINARY_DIR}/firmware.map\" \
+\"-T${LNK_SCRIPT}\" \"-Wl,-Map,${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.map\" \
 \"-L${CMAKE_CURRENT_BINARY_DIR}\" \
 -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections \
 -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common \
 -Wl,--warn-section-align -Wl,--warn-unresolved-symbols")
 
-add_custom_command (OUTPUT firmware.elf COMMAND ${CMAKE_CXX_COMPILER} -Os -Wl,--gc-sections -mcpu=cortex-m3 "-T${LNK_SCRIPT}" "-Wl,-Map,${CMAKE_CURRENT_BINARY_DIR}/firmware.map" -o firmware.elf "-L${CMAKE_CURRENT_BINARY_DIR}" -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $<TARGET_FILE:proj_obj> $<TARGET_FILE:all_libs> $<TARGET_FILE:libsam_static> -Wl,--end-group )
 
-add_custom_target(firmware.elf ALL DEPENDS proj_obj all_libs libsam_static)
+#add_custom_target(${TARGET_NAME}.elf ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf")
+add_custom_command (OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf"
+DEPENDS proj_obj all_libs libsam_static
+COMMAND ${CMAKE_CXX_COMPILER} -Os -Wl,--gc-sections -mcpu=cortex-m3 "-T${LNK_SCRIPT}" "-Wl,-Map,${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.map" -o ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf "-L${CMAKE_CURRENT_BINARY_DIR}" -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $<TARGET_FILE:proj_obj> $<TARGET_FILE:all_libs> $<TARGET_FILE:libsam_static> -Wl,--end-group )
 
-add_executable(app firmware.elf)
+#add_custom_target(${TARGET_NAME}.bin ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf")
+add_custom_command (OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.bin"
+DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf"
+COMMAND ${OBJCP} -O binary ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.bin)
 

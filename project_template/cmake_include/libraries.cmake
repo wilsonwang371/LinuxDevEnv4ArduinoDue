@@ -37,16 +37,6 @@ list (APPEND all_libs_src ${tmp_src_files_list})
 endforeach (src_dir)
 add_library (all_libs STATIC ${all_libs_src})
 
-#aux_source_directory (${SAM_CORES_DIR} SAM_CORES_SRC_FILES)
-#add_library (sam_cores_lib STATIC ${SAM_CORES_SRC_FILES})
-#aux_source_directory (${SAM_CORES_DIR}/avr SAM_CORES_AVR_SRC_FILES)
-#add_library (sam_cores_avr_lib STATIC ${SAM_CORES_AVR_SRC_FILES})
-#aux_source_directory (${SAM_CORES_DIR}/USB SAM_CORES_USB_SRC_FILES)
-#add_library (sam_cores_usb_lib STATIC ${SAM_CORES_USB_SRC_FILES})
-
-#aux_source_directory (${SAM_VARIANTS_DIR} SAM_VARIANTS_SRC_FILES)
-#add_library (sam_variants_lib STATIC ${SAM_VARIANTS_SRC_FILES})
-
 add_library (libsam_static STATIC IMPORTED)
 set_target_properties(libsam_static PROPERTIES IMPORTED_LOCATION
                       ${SAM_VARIANTS_DIR}/libsam_sam3x8e_gcc_rel.a)
