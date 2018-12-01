@@ -9,9 +9,14 @@ sudo apt install cmake gcc-arm-none-eabi
 ## Try Example
 
 ```bash
-cd project_template
-cmake .
+mkdir build
+cd build
+cmake ../project_template/
 make
+```
+If you want to upload code to Arduino Due, run this second step
+```bash
+make upload
 ```
 
 
