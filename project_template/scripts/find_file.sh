@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# find_file.sh <search_root_dir> <partial_name> [exe, dir, ]
+# find_file.sh <search_root_dir> <partial_name> [exe, dir]
 
 if [ $# -ne 3 ]
 then
@@ -23,7 +23,7 @@ do
     tmptype=$(file $i)
     if [[ "${tmptype}" == *${target}* ]]
     then
-        echo $i
+        echo -n $i
         break
     fi
 done

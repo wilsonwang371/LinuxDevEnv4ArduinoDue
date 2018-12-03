@@ -1,11 +1,23 @@
 project(example C ASM CXX)
 cmake_minimum_required(VERSION 3.0)
 
-set (CROSSCOMPILE_TOOLCHAIN "/usr/bin/arm-none-eabi-")
-set (CMAKE_C_COMPILER "${CROSSCOMPILE_TOOLCHAIN}gcc")
-set (CMAKE_CXX_COMPILER "${CROSSCOMPILE_TOOLCHAIN}gcc")
-set (CMAKE_AR "${CROSSCOMPILE_TOOLCHAIN}ar")
-set (CMAKE_ASM_COMPILER "${CROSSCOMPILE_TOOLCHAIN}as")
+
+message ("Searching GCC toolchain for Arduino DUE...")
+set (ARDUINO_DIR "$ENV{HOME}/.arduino15/")
+
+execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_DIR}\" gcc exe"
+OUTPUT_VARIABLE CMAKE_C_COMPILER)
+execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_DIR}\" gcc exe"
+OUTPUT_VARIABLE CMAKE_CXX_COMPILER)
+execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_DIR}\" -ar exe"
+OUTPUT_VARIABLE CMAKE_AR)
+execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_DIR}\" -as exe"
+OUTPUT_VARIABLE CMAKE_ASM_COMPILER)
+
+message ("    GCC: ${CMAKE_C_COMPILER}")
+message ("    G++: ${CMAKE_CXX_COMPILER}")
+message ("    AR: ${CMAKE_AR}")
+message ("    AS: ${CMAKE_ASM_COMPILER}")
 
 set (UPLOAD_BOSSA "")
 set (UPLOAD_VERBOSE_FLAGS "-i -d")
