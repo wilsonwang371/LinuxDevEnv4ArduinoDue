@@ -5,30 +5,16 @@ cmake_minimum_required(VERSION 3.0)
 message ("Searching GCC toolchain for Arduino DUE...")
 set (ARDUINO_DIR "$ENV{HOME}/.arduino15/")
 
-execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_DIR}\" gcc exe"
-OUTPUT_VARIABLE CMAKE_C_COMPILER)
-execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_DIR}\" gcc exe"
-OUTPUT_VARIABLE CMAKE_CXX_COMPILER)
-execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_DIR}\" -ar exe"
-OUTPUT_VARIABLE CMAKE_AR)
-execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_DIR}\" -as exe"
-OUTPUT_VARIABLE CMAKE_ASM_COMPILER)
+set (TARGET_NAME "firmware")
 
-message ("    GCC: ${CMAKE_C_COMPILER}")
-message ("    G++: ${CMAKE_CXX_COMPILER}")
-message ("    AR: ${CMAKE_AR}")
-message ("    AS: ${CMAKE_ASM_COMPILER}")
+include("${CMAKE_SOURCE_DIR}/cmake_include/toolchain.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake_include/libraries.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake_include/uploader.cmake")
 
 set (UPLOAD_BOSSA "")
 set (UPLOAD_VERBOSE_FLAGS "-i -d")
 set (UPLOAD_PORT_BASENAME "ttyACM0")
 
-set (OBJCP "${CROSSCOMPILE_TOOLCHAIN}objcopy")
-
-
-set (TARGET_NAME "firmware")
-include("${CMAKE_SOURCE_DIR}/cmake_include/libraries.cmake")
-include("${CMAKE_SOURCE_DIR}/cmake_include/uploader.cmake")
 
 include_directories ("${CMAKE_SOURCE_DIR}/inc")
 aux_source_directory ("${CMAKE_SOURCE_DIR}/src" OBJ_FILES)
