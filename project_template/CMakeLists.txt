@@ -2,19 +2,19 @@ project(example C ASM CXX)
 cmake_minimum_required(VERSION 3.0)
 
 
-message ("Searching GCC toolchain for Arduino DUE...")
-set (ARDUINO_DIR "$ENV{HOME}/.arduino15/")
+set (ARDUINO_PKG_DIR "$ENV{HOME}/.arduino15/packages")
+set (ARDUINO_LIB_DIR "$ENV{HOME}/arduino-1.8.7/libraries")
 
 set (TARGET_NAME "firmware")
 
 include("${CMAKE_SOURCE_DIR}/cmake_include/toolchain.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_include/libraries.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake_include/libraries2.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_include/uploader.cmake")
 
 set (UPLOAD_BOSSA "")
 set (UPLOAD_VERBOSE_FLAGS "-i -d")
 set (UPLOAD_PORT_BASENAME "ttyACM0")
-
 
 include_directories ("${CMAKE_SOURCE_DIR}/inc")
 aux_source_directory ("${CMAKE_SOURCE_DIR}/src" OBJ_FILES)

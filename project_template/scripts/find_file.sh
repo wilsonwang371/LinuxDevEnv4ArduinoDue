@@ -6,7 +6,7 @@ then
     exit 1
 fi
 
-files=$(find "$1" -name "*$2*")
+files=$(find "$1" | grep "$2")
 if [ "$3" == "dir" ]
 then
     target="directory"
