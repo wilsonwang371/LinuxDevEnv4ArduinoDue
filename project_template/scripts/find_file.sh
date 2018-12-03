@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# find_file.sh <search_root_dir> <partial_name> [exe, dir]
+# find_file.sh <search_root_dir> <partial_name> [exe, dir, file]
 
 if [ $# -ne 3 ]
 then
@@ -13,6 +13,9 @@ then
 elif [ "$3" == "exe" ]
 then
     target="executable"
+elif [ "$3" == "file" ]
+then
+    target="ANY"
 fi
 if [ "${target}" == "" ]
 then
@@ -21,7 +24,11 @@ fi
 for i in ${files}
 do
     tmptype=$(file $i)
-    if [[ "${tmptype}" == *${target}* ]]
+    if [ "${target}" == "ANY" ]
+    then
+        echo -n $i
+        break
+    elif [[ "${tmptype}" == *${target}* ]]
     then
         echo -n $i
         break

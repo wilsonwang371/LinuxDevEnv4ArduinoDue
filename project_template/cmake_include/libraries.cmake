@@ -37,7 +37,7 @@ list (APPEND all_libs_src ${tmp_src_files_list})
 endforeach (src_dir)
 add_library (all_libs STATIC ${all_libs_src})
 
-add_library (libsam_static STATIC IMPORTED)
-set_target_properties(libsam_static PROPERTIES IMPORTED_LOCATION
-                      ${SAM_VARIANTS_DIR}/libsam_sam3x8e_gcc_rel.a)
+#add_library (libsam_static STATIC IMPORTED)
+#set_target_properties(libsam_static PROPERTIES IMPORTED_LOCATION
+#                      ${SAM_VARIANTS_DIR}/libsam_sam3x8e_gcc_rel.a)
 
