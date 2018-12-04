@@ -1,5 +1,13 @@
 # LinuxDevEnv4ArduinoDue
 
+This is a repository which helps you to build your Arduino Due code without using Arduino IDE.
+
+## Features
+
+*. Based on CMake
+*. Build your Arduino code without Arduino IDE
+*. Added FreeRTOS support
+
 ## Install Arduino IDE
 
 1. Download Arduino for Linux
@@ -17,6 +25,11 @@ make
 If you want to upload code to Arduino Due, run this second step
 ```bash
 make upload
+```
+
+If you want verbose output, use
+```bash
+cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON ../project_template/
 ```
 
 
