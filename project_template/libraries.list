@@ -1,3 +1,4 @@
-libsam_core  [^a-zA-Z]sam/.*/cores[^a-zA-Z] dir static
-libsam_variants  [^a-zA-Z]sam/.*/variants[^a-zA-Z] dir static
-libsam_static libsam_sam3x8e_gcc_rel.a ar static
+libsam_core     [^a-zA-Z]sam/.*/cores[^a-zA-Z]      dir     static
+libsam_variants [^a-zA-Z]sam/.*/variants[^a-zA-Z]   dir     static
+libsam_static   libsam_sam3x8e_gcc_rel.a            ar      static
+libfreertos     [^a-zA-Z]FreeRTOS_ARM/src[^a-zA-Z]  dir     static
