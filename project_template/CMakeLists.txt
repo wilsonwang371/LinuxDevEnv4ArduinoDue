@@ -21,7 +21,6 @@ include_directories ("${CMAKE_SOURCE_DIR}/inc")
 aux_source_directory ("${CMAKE_SOURCE_DIR}/src" OBJ_FILES)
 add_library (proj_obj STATIC ${OBJ_FILES})
 
-#set (LNK_SCRIPT "${SAM_VARIANTS_DIR}/linker_scripts/gcc/flash.ld")
 
 set (CMAKE_CXX_FLAGS_DEBUG "-MMD -g -O0 -DDEBUG")
 set (CMAKE_CXX_FLAGS_RELEASE "-MMD -Os")
