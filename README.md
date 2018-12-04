@@ -4,9 +4,9 @@ This is a repository which helps you to build your Arduino Due code without usin
 
 ## Features
 
-*. Based on CMake
-*. Build your Arduino code without Arduino IDE
-*. Added FreeRTOS support
+* Based on CMake
+* Build your Arduino code without Arduino IDE
+* Added FreeRTOS support
 
 ## Install Arduino IDE
 
