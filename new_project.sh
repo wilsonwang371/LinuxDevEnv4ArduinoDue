@@ -3,7 +3,5 @@
 echo -n "New project directory name:"
 read proj_name
 dir_name="$( cd "$(dirname "$0")" ; pwd -P )"
-pushd ${dir_name}
-cp -R tpl "${proj_name}"
-popd
+cp -R "${dir_name}/tpl" "${dir_name}/${proj_name}"
 
