@@ -1,4 +1,4 @@
-# LinuxDevEnv4ArduinoDue
+# Arduino Due Linux Develop Environment
 
 This is a repository which helps you to build your Arduino Due code without using Arduino IDE.
 
