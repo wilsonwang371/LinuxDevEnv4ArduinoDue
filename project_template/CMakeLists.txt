@@ -89,11 +89,10 @@ SET(CMAKE_EXE_LINKER_FLAGS "-Os -Wl,--gc-sections -mcpu=cortex-m3 \
 -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common \
 -Wl,--warn-section-align -Wl,--warn-unresolved-symbols")
 
-
 #add_custom_target(${TARGET_NAME}.elf ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf")
 add_custom_command (OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf"
-DEPENDS proj_obj all_libs libsam_static
-COMMAND ${CMAKE_CXX_COMPILER} -Os -Wl,--gc-sections -mcpu=cortex-m3 "-T${LNK_SCRIPT}" "-Wl,-Map,${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.map" -o ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf "-L${CMAKE_CURRENT_BINARY_DIR}" -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $<TARGET_FILE:proj_obj> $<TARGET_FILE:all_libs> $<TARGET_FILE:libsam_static> -Wl,--end-group )
+DEPENDS proj_obj ${ALL_LIBS}
+COMMAND ${CMAKE_CXX_COMPILER} -Os -Wl,--gc-sections -mcpu=cortex-m3 "-T${LNK_SCRIPT}" "-Wl,-Map,${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.map" -o ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf "-L${CMAKE_CURRENT_BINARY_DIR}" -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $<TARGET_FILE:proj_obj> ${${ALL_LIBS}} -Wl,--end-group )
 
 #add_custom_target(${TARGET_NAME}.bin ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.elf")
 add_custom_command (OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.bin"

@@ -3,6 +3,8 @@ message ("Searching libraries...")
 
 file (STRINGS ${CMAKE_SOURCE_DIR}/libraries.list libraries_list)
 
+set (ALL_LIBS "")
+
 foreach (one_lib ${libraries_list})
 separate_arguments (one_lib_list UNIX_COMMAND ${one_lib})
 list (GET one_lib_list 0 lib_target_name)
@@ -17,8 +19,10 @@ if (lib_type STREQUAL "dir")
     separate_arguments (src_files_list UNIX_COMMAND ${src_files})
     if (lib_static STREQUAL "static")
         add_library (${lib_target_name} STATIC ${src_files_list})
+        set (ALL_LIBS ${ALL_LIBS} "${lib_target_name}")
     else (lib_static STREQUAL "static")
         add_library (${lib_target_name} ${src_files_list})
+        set (ALL_LIBS ${ALL_LIBS} "${lib_target_name}")
     endif (lib_static STREQUAL "static")
 else (lib_type STREQUAL "dir")
     execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}\" ${lib_search_name} ${lib_type}"
@@ -28,10 +32,12 @@ else (lib_type STREQUAL "dir")
         add_library (${lib_target_name} STATIC IMPORTED)
         set_target_properties(${lib_target_name} PROPERTIES IMPORTED_LOCATION
                       ${lib_path})
+        set (ALL_LIBS ${ALL_LIBS} "${lib_target_name}")
     else (lib_static STREQUAL "static")
         add_library (${lib_target_name} IMPORTED)
         set_target_properties(${lib_target_name} PROPERTIES IMPORTED_LOCATION
                       ${lib_path})
+        set (ALL_LIBS ${ALL_LIBS} "${lib_target_name}")
     endif (lib_static STREQUAL "static")
 endif (lib_type STREQUAL "dir")
 endforeach (one_lib)

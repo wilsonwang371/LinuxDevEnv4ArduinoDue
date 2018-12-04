@@ -1,10 +1,10 @@
 
 message ("Searching GCC toolchain for Arduino DUE...")
 
-execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}\" .*-gcc exe"
+execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}\" .*-gcc$ exe"
 OUTPUT_VARIABLE CMAKE_C_COMPILER)
 
-execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}\" .*-gcc exe"
+execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}\" .*-gcc$ exe"
 OUTPUT_VARIABLE CMAKE_CXX_COMPILER)
 
 execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}\" .*-ar exe"
