@@ -5,8 +5,22 @@ if [ $# -ne 3 ]
 then
     exit 1
 fi
-
-files=$(find "$1" | grep "$2")
+files=""
+if [[ "$1" == *:* ]]
+then
+    SEARCH_ROOT=${1//:/ }
+    for i in ${SEARCH_ROOT}
+    do
+        tmp=$(find "$i" | grep "$2")
+        if [ "${tmp}" != "" ]
+        then
+            files="${files} ${tmp}"
+        fi
+    done
+else
+    SEARCH_ROOT=$1
+    files=$(find "$1" | grep "$2")
+fi
 if [ "$3" == "dir" ]
 then
     target="directory"

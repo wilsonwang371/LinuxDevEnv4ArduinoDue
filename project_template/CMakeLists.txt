@@ -4,12 +4,12 @@ cmake_minimum_required(VERSION 3.0)
 
 set (ARDUINO_PKG_DIR "$ENV{HOME}/.arduino15/packages")
 set (ARDUINO_LIB_DIR "$ENV{HOME}/arduino-1.8.7/libraries")
+set (ARDUINO_OTHER_LIB_DIR "${CMAKE_SOURCE_DIR}/../lib")
 
 set (TARGET_NAME "firmware")
 
 include("${CMAKE_SOURCE_DIR}/cmake_include/toolchain.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_include/libraries.cmake")
-include("${CMAKE_SOURCE_DIR}/cmake_include/libraries2.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_include/header_inc.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_include/uploader.cmake")
 
@@ -21,7 +21,7 @@ include_directories ("${CMAKE_SOURCE_DIR}/inc")
 aux_source_directory ("${CMAKE_SOURCE_DIR}/src" OBJ_FILES)
 add_library (proj_obj STATIC ${OBJ_FILES})
 
-set (LNK_SCRIPT "${SAM_VARIANTS_DIR}/linker_scripts/gcc/flash.ld")
+#set (LNK_SCRIPT "${SAM_VARIANTS_DIR}/linker_scripts/gcc/flash.ld")
 
 set (CMAKE_CXX_FLAGS_DEBUG "-MMD -g -O0 -DDEBUG")
 set (CMAKE_CXX_FLAGS_RELEASE "-MMD -Os")

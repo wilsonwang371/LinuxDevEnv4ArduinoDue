@@ -1,43 +1,43 @@
 
-message ("Searching SAM directory...")
-execute_process (COMMAND bash -c "find ~/ -name sam"
-                 OUTPUT_VARIABLE POSSIBLE_SAM_DIRS)
+message ("Searching libraries...")
 
-execute_process (COMMAND bash -c "for i in \"${POSSIBLE_SAM_DIRS}\"; do find \$i -name cores; done;"
-                 OUTPUT_VARIABLE SAM_CORES_DIRS)
-separate_arguments (SAM_CORES_DIRS_LIST UNIX_COMMAND ${SAM_CORES_DIRS})
-list (GET SAM_CORES_DIRS_LIST 0 SAM_CORES_DIR)
-get_filename_component (SAM_DIR ${SAM_CORES_DIR} DIRECTORY)
-unset (SAM_CORES_DIRS)
-unset (SAM_CORES_DIRS_LIST)
-unset (SAM_CORES_DIR)
+file (STRINGS ${CMAKE_SOURCE_DIR}/libraries.list libraries_list)
 
-set (SAM_CORES_DIR "${SAM_DIR}/cores/arduino")
-set (SAM_VARIANTS_DIR "${SAM_DIR}/variants/arduino_due_x")
-set (SAM_SYSTEM_DIR "${SAM_DIR}/system")
-set (SAM_HEADER_FILES_DIR "${SAM_SYSTEM_DIR}/libsam")
+set (ALL_LIBS "")
 
-
-set (SAM_CMSIS_DEVICE_HEADER_FILES_DIR "${SAM_SYSTEM_DIR}/CMSIS/Device/ATMEL")
-set (SAM_CMSIS_HEADER_FILES_DIR "${SAM_SYSTEM_DIR}/CMSIS/CMSIS/Include")
-
-include_directories("${SAM_CORES_DIR}")
-include_directories("${SAM_HEADER_FILES_DIR}")
-include_directories("${SAM_CMSIS_DEVICE_HEADER_FILES_DIR}")
-include_directories("${SAM_CMSIS_HEADER_FILES_DIR}")
-include_directories("${SAM_VARIANTS_DIR}")
-
-
-#foreach (src_dir ${SAM_CORES_DIR} ${SAM_VARIANTS_DIR} )
-#message ("Searching source files in ${src_dir}")
-#execute_process (COMMAND bash -c "for i in \"${src_dir}\"; do find \$i -name '*.c' -o -name '*.cpp' -o -name '*.S'; done;"
-#                 OUTPUT_VARIABLE tmp_src_files)
-#separate_arguments (tmp_src_files_list UNIX_COMMAND ${tmp_src_files})
-#list (APPEND all_libs_src ${tmp_src_files_list})
-#endforeach (src_dir)
-#add_library (all_libs STATIC ${all_libs_src})
-
-#add_library (libsam_static STATIC IMPORTED)
-#set_target_properties(libsam_static PROPERTIES IMPORTED_LOCATION
-#                      ${SAM_VARIANTS_DIR}/libsam_sam3x8e_gcc_rel.a)
-
+foreach (one_lib ${libraries_list})
+separate_arguments (one_lib_list UNIX_COMMAND ${one_lib})
+list (GET one_lib_list 0 lib_target_name)
+list (GET one_lib_list 1 lib_search_name)
+list (GET one_lib_list 2 lib_type)
+list (GET one_lib_list 3 lib_static)
+if (lib_type STREQUAL "dir")
+    execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}:${ARDUINO_LIB_DIR} ${ARDUINO_OTHER_LIB_DIR}\" ${lib_search_name} ${lib_type}"
+        OUTPUT_VARIABLE lib_dir)
+    execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_src.sh \"${lib_dir}\""
+        OUTPUT_VARIABLE src_files)
+    separate_arguments (src_files_list UNIX_COMMAND ${src_files})
+    if (lib_static STREQUAL "static")
+        add_library (${lib_target_name} STATIC ${src_files_list})
+        set (ALL_LIBS ${ALL_LIBS} "${lib_target_name}")
+    else (lib_static STREQUAL "static")
+        add_library (${lib_target_name} ${src_files_list})
+        set (ALL_LIBS ${ALL_LIBS} "${lib_target_name}")
+    endif (lib_static STREQUAL "static")
+else (lib_type STREQUAL "dir")
+    execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}\" ${lib_search_name} ${lib_type}"
+        OUTPUT_VARIABLE lib_path)
+    #message ("path ${lib_path}")
+    if (lib_static STREQUAL "static")
+        add_library (${lib_target_name} STATIC IMPORTED)
+        set_target_properties(${lib_target_name} PROPERTIES IMPORTED_LOCATION
+                      ${lib_path})
+        set (ALL_LIBS ${ALL_LIBS} "${lib_target_name}")
+    else (lib_static STREQUAL "static")
+        add_library (${lib_target_name} IMPORTED)
+        set_target_properties(${lib_target_name} PROPERTIES IMPORTED_LOCATION
+                      ${lib_path})
+        set (ALL_LIBS ${ALL_LIBS} "${lib_target_name}")
+    endif (lib_static STREQUAL "static")
+endif (lib_type STREQUAL "dir")
+endforeach (one_lib)

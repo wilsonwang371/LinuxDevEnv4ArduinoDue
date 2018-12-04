@@ -1,0 +1,3 @@
+[submodule "lib/FreeRTOS-Arduino"]
+	path = lib/FreeRTOS-Arduino
+	url = https://github.com/greiman/FreeRTOS-Arduino
