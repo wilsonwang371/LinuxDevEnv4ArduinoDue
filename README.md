@@ -33,5 +33,28 @@ cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON ../project_template/
 ```
 
 
+## Source Files Organizations
+
+```
+.
+├── cmake_include
+│   ├── header_inc.cmake
+│   ├── libraries.cmake
+│   ├── toolchain.cmake
+│   └── uploader.cmake
+├── CMakeLists.txt
+├── inc               <- !Put your header files here!
+│   ├── due_sam3x.h
+│   └── due_sam3x.init.h
+├── includes.list     <- !Path included while building the projec!
+├── libraries.list    <- !Libraries included!
+├── scripts
+│   ├── find_file.sh
+│   ├── find_inc.sh
+│   └── find_src.sh
+└── src               <- !Put your source files here!
+    └── main.cpp
+```
+
 ## Reference
 * http://www.atwillys.de/content/cc/using-custom-ide-and-system-library-on-arduino-due-sam3x8e/?lang=en
