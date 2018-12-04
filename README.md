@@ -58,4 +58,9 @@ $ cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .
 ```
 
 ## Reference
+
 * http://www.atwillys.de/content/cc/using-custom-ide-and-system-library-on-arduino-due-sam3x8e/?lang=en
+
+## Issues
+
+Please let me know if you experience issues with this.
