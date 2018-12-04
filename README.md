@@ -46,7 +46,7 @@ cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON ../project_template/
 ├── inc               <- !Put your header files here!
 │   ├── due_sam3x.h
 │   └── due_sam3x.init.h
-├── includes.list     <- !Path included while building the projec!
+├── includes.list     <- !Path included while building the project!
 ├── libraries.list    <- !Libraries included!
 ├── scripts
 │   ├── find_file.sh
