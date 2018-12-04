@@ -1,2 +1,2 @@
-libsam  [^a-zA-Z]sam[^a-zA-Z] directory static
-libsam_static libsam_sam3x8e_gcc_rel.a file static
+libsam  [^a-zA-Z]sam[^a-zA-Z] dir static
+libsam_static libsam_sam3x8e_gcc_rel.a ar static
