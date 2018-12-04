@@ -17,19 +17,20 @@ This is a repository which helps you to build your Arduino Due code without usin
 ## Try Example
 
 ```bash
-mkdir build
-cd build
-cmake ../project_template/
-make
+$ ./new_project.sh
+New project directory name:test
+$ cd test
+$ cmake .
+$ make
 ```
 If you want to upload code to Arduino Due, run this second step
 ```bash
-make upload
+$ make upload
 ```
 
 If you want verbose output, use
 ```bash
-cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON ../project_template/
+cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .
 ```
 
 
