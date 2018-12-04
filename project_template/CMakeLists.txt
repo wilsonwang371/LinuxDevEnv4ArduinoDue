@@ -10,6 +10,7 @@ set (TARGET_NAME "firmware")
 include("${CMAKE_SOURCE_DIR}/cmake_include/toolchain.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_include/libraries.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_include/libraries2.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake_include/header_inc.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_include/uploader.cmake")
 
 set (UPLOAD_BOSSA "")
