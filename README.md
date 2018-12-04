@@ -30,7 +30,7 @@ $ make upload
 
 If you want verbose output, use
 ```bash
-cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .
+$ cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .
 ```
 
 
