@@ -1,10 +1,10 @@
 # LinuxDevEnv4ArduinoDue
 
-## Install Dependencies
+## Install Arduino IDE
 
-```bash
-sudo apt install cmake gcc-arm-none-eabi
-```
+1. Download Arduino for Linux
+2. Run Arduino IDE and download Arduino Due in board manager. (This will download SAM libraries and toolchains)
+
 
 ## Try Example
 
