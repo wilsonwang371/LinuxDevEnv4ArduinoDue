@@ -33,7 +33,7 @@ cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON ../project_template/
 ```
 
 
-## Source Files Organizations
+## Source Files Organizations in Project Template
 
 ```
 .
