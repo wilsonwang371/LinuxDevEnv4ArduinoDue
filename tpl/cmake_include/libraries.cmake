@@ -12,7 +12,7 @@ list (GET one_lib_list 1 lib_search_name)
 list (GET one_lib_list 2 lib_type)
 list (GET one_lib_list 3 lib_static)
 if (lib_type STREQUAL "dir")
-    execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}:${ARDUINO_LIB_DIR} ${ARDUINO_OTHER_LIB_DIR}\" ${lib_search_name} ${lib_type}"
+    execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}:${ARDUINO_LIB_DIR}:${ARDUINO_OTHER_LIB_DIR}\" ${lib_search_name} ${lib_type}"
         OUTPUT_VARIABLE lib_dir)
     execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_src.sh \"${lib_dir}\""
         OUTPUT_VARIABLE src_files)

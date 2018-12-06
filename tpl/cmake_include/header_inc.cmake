@@ -4,7 +4,7 @@ message ("Adding including paths...")
 file (STRINGS ${CMAKE_SOURCE_DIR}/includes.list includes_list)
 
 foreach (one_include ${includes_list})
-    execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}\" ${one_include} dir"
+    execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_file.sh \"${ARDUINO_PKG_DIR}:${ARDUINO_LIB_DIR}:${ARDUINO_OTHER_LIB_DIR}\" ${one_include} dir"
         OUTPUT_VARIABLE one_include_root)
     #message ("${ARDUINO_PKG_DIR}")
     execute_process (COMMAND bash -c "${CMAKE_SOURCE_DIR}/scripts/find_inc.sh \"${one_include_root}\""
