@@ -1,2 +1,2 @@
 [^a-zA-Z]sam[^a-zA-Z]
-[^a-zA-Z]FreeRTOS_ARM/src[^a-zA-Z]
+[^a-zA-Z]FreeRTOS_ARM/src
